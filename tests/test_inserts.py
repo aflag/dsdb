@@ -31,6 +31,36 @@ class TestInsertFunction(unittest.TestCase):
             obj = pickle.loads(f.read())
             self.assertEqual(['hello'], obj.get('content'))
 
+    def test_version_increment(self):
+        db = DeadSimple('tests/db')
+        db['prego'] = ['hello']
+        with open('tests/db/prego', 'rb') as f:
+            obj = pickle.loads(f.read())
+            self.assertEqual(0, obj.get('version'))
+
+        db['prego'] = 'hi'
+        with open('tests/db/prego', 'rb') as f:
+            obj = pickle.loads(f.read())
+            self.assertEqual(1, obj.get('version'))
+
+    def test_version_increment_with_multiple_dbs(self):
+        db1 = DeadSimple('tests/db')
+        db1['prego'] = ['hello']
+        with open('tests/db/prego', 'rb') as f:
+            obj = pickle.loads(f.read())
+            self.assertEqual(0, obj.get('version'))
+
+        db2 = DeadSimple('tests/db')
+        db2['prego'] = 'hi'
+        with open('tests/db/prego', 'rb') as f:
+            obj = pickle.loads(f.read())
+            self.assertEqual(1, obj.get('version'))
+
+        db1 = DeadSimple('tests/db')
+        db1['prego'] = ['hello']
+        with open('tests/db/prego', 'rb') as f:
+            obj = pickle.loads(f.read())
+            self.assertEqual(3, obj.get('version'))
 
     def test_slash_not_allowed_in_key(self):
         db = DeadSimple('tests/db')
