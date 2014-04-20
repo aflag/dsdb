@@ -6,7 +6,65 @@ Simple. Simple use, for simple needs.
 Goals
 =====
 
-* Slow (IOW, speed is not a concern)
-* Easy to use
-* Needs only a unix filesystem (no need for external services)
-* Works with multiple concurrent processes
+* It should be slow (IOW, speed is *not* a concern)
+* It must be schemaless
+* It must be easy to use
+* It must be easy to code
+* It must not require anything, but a unix filesystem
+* It must be safe to use with concurrent processes (and, consequently, threads)
+
+Example
+=======
+
+```python
+from dsdb import DeadSimple, Value, WriteError
+
+db = DeadSimple('/tmp/db/')
+db.set('key1', Value('hey'))
+value = db.get('key1')
+
+print value.content  #=> hey
+
+value.content = 'another thing'
+db.set('key1', value)
+value = db.get('key1')
+
+print value.content  #=> another thing
+
+try:
+    db.set('key1', Value("ops, an error!"))
+except WriteError:
+    # value's version is older than what's in storage
+    pass
+db.set_unsafe('key1', Value("all is well"))  # this should work regardless of version
+
+print db.get('key1').content  #=> all is well
+```
+
+Architecture
+============
+
+Each key is stored in a different file inside a db directory. I use flock to
+guarantee data consistency. That means only one process can read or update a
+file at a time.
+
+A backup can be done merely copying all files inside the directory (extra
+points for those of you who use flock on your backup script :)
+
+That's it.
+
+Improvements
+============
+
+Although speed is not a primary concern, there are easy things that can be
+developed later to improve on it. One is to keep a memory cache for reads. If
+only eventual consistency is required, then we can reread from db only after a
+given period of time has ellapsed.
+
+Furthermore, instead of reading (and locking) the file each time, we could
+check if the timestamp of the file is newer than the timestamp of our key. If
+it is not, then we could use an in-memory version of the value.
+
+Of course, there are a lot of hard-to-do things to improve performance.
+However, I'll be happy performance-wise once I do what I have outlined in
+previous paragraphs.
