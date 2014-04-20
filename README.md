@@ -78,3 +78,10 @@ On quick 'n' dirty benchmark using timeit (look at tests/benchmark.py) I got
 second. That's about the worst case scenario (the read improvement outlined may
 very well make that number a lot bigger). I ran that benchmark on my lenovo
 desktop, which has SSD HD. Please run it yourself and report back :)
+
+My desktop PC (with old disk based HD) set me back to 436 reads+writes per
+second. My linode machine, which supposely uses SSD, gets me 379 reads+writes
+per second.
+
+It all comes to show that reading and writing to disk is not THAT slow :P
+Thankfully all those numbers are bigger than what I need :)
