@@ -34,7 +34,7 @@ class DeadSimple(object):
         change the contents of disk, regardless of whether this object was the
         last one to modify the key or not."""
         if '/' in key:
-            raise ValueError('Key cannot contain /')
+            raise KeyError('Key cannot contain /: ' + key)
         file_name = os.path.join(self.directory, key)
         with lock_file(file_name, 'a+b') as f:
             f.seek(0)
@@ -51,4 +51,5 @@ class DeadSimple(object):
             f.write(pickle.dumps(obj))
 
     def __getitem__(self, key):
-        pass
+        if '/' in key:
+            raise KeyError('Key cannot contain /: ' + key)

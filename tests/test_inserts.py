@@ -5,7 +5,7 @@ import os
 from dsdb import DeadSimple
 
 
-class TestInsertFunction(unittest.TestCase):
+class TestInserts(unittest.TestCase):
 
     def setUp(self):
         try:
@@ -71,4 +71,4 @@ class TestInsertFunction(unittest.TestCase):
     def test_slash_not_allowed_in_key(self):
         db = DeadSimple('tests/db')
         db['prego'] = ['hello']
-        self.assertRaises(ValueError, db.__setitem__, 'prego/ok', 'hello')
+        self.assertRaises(KeyError, db.__setitem__, 'prego/ok', 'hello')
