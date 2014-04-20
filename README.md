@@ -1,7 +1,7 @@
-dsdb
-====
+Dead Simple Database
+====================
 
-Dead simple Database: Simple, for simple needs.
+Simple. Simple use, for simple needs.
 
 Goals
 =====
