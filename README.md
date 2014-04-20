@@ -68,3 +68,13 @@ it is not, then we could use an in-memory version of the value.
 Of course, there are a lot of hard-to-do things to improve performance.
 However, I'll be happy performance-wise once I do what I have outlined in
 previous paragraphs.
+
+
+Benchmark
+=========
+
+On quick 'n' dirty benchmark using timeit (look at tests/benchmark.py) I got
+640 read+writes per second. That is, I made 640 reads and 640 writes in one
+second. That's about the worst case scenario (the read improvement outlined may
+very well make that number a lot bigger). I ran that benchmark on my lenovo
+desktop, which has SSD HD. Please run it yourself and report back :)
