@@ -29,7 +29,8 @@ class TestInsertFunction(unittest.TestCase):
         db['prego'] = ['hello']
         with open('tests/db/prego', 'rb') as f:
             obj = pickle.loads(f.read())
-            self.assertEqual(['hello'], obj)
+            self.assertEqual(['hello'], obj.get('content'))
+
 
     def test_slash_not_allowed_in_key(self):
         db = DeadSimple('tests/db')
