@@ -16,4 +16,5 @@ class DeadSimple(object):
         self.keys = {}
 
     def __setitem__(self, key, value):
-        pass
+        if '/' in key:
+            raise ValueError('Key cannot contain /')
