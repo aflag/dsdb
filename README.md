@@ -79,11 +79,6 @@ reads.  Using inotify, I could invalidate the in-memory cache whenever a
 key gets written to. That would work as long as the number of reads is
 much greater than the number of writes.
 
-Of course, there are a lot of hard-to-do things to improve performance.
-However, I'll be happy performance-wise once I do what I have outlined
-in previous paragraphs.
-
-
 Benchmark
 =========
 
