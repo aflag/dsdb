@@ -1,4 +1,5 @@
 import unittest
+import functools
 import pickle
 import shutil
 import os
@@ -105,3 +106,35 @@ class TestInserts(unittest.TestCase):
         self.assertEqual(set([1,2,3]), db.get('appendable').content)
         db.set('appendable', Value(set([5,7])), self._appendable)
         self.assertEqual(set([1,2,3,5,7]), db.get('appendable').content)
+
+    def _check_values(self, expected_value, expected_stored, value, stored):
+        self.assertEqual(expected_value, value)
+        self.assertEqual(expected_stored, stored)
+        self.called = True
+        return value
+
+    def test_merge_gets_called_value_none_if_version_lower_than_minus_1(self):
+        db = DeadSimple('tests/db')
+        v = Value('hi')
+        v.version = -2
+        stored = Value(None)
+        stored.version = -1
+        self.called = False
+        db.set('key', v, functools.partial(self._check_values, v, stored))
+        self.assertTrue(self.called)
+        del self.called
+
+    def _check_stored_none(self, stored):
+        self.assertIs(None, stored.content)
+        return Value('hello')
+
+    def _check_stored_content(self, expected_content, new_content, stored):
+        self.assertEqual(expected_content, stored.content)
+        return Value(new_content)
+
+    def test_change_cb_is_able_to_change_values(self):
+        db = DeadSimple('tests/db')
+        db.change('key', self._check_stored_none)
+        db.change('key', functools.partial(self._check_stored_content, 'hello', 'hi'))
+        db.change('key', functools.partial(self._check_stored_content, 'hi', 'bye'))
+        self.assertEqual('bye', db.get('key').content)

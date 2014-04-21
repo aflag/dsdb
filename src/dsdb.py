@@ -32,6 +32,9 @@ class Value(object):
         self.content = content
         self.version = -1
 
+    def __eq__(self, other):
+        return self.version==other.version and self.content==other.content
+
 
 class DeadSimple(object):
     """The dead simple database has a dead simple design:
@@ -60,9 +63,17 @@ class DeadSimple(object):
         return obj
 
     def unsafe_set(self, key, value):
-        """Convinience method. Does the same as set, but ignores whatever is
-        stored and always add the new value."""
+        """Does the same as set, but ignores whatever is stored and always add
+        the new value."""
         self.set(key, value, merge=lambda value,stored: value)
+
+    def change(self, key, change_cb):
+        """Calls change_cb(stored_value)->new_value inside the critical section
+        of the file update. None is passed as the value content if the key is
+        empty. The returned value of change_cb will be added to storage."""
+        value = Value(None)
+        value.version = -2  # guarantees version is always old
+        self.set(key, value, lambda value, stored_value: change_cb(stored_value))
 
     def set(self, key, value, merge=None):
         """Synchronously values to disk under the specified key. It will always
@@ -84,8 +95,8 @@ class DeadSimple(object):
             if value.version >= obj.get('version', -1):
                 obj['content'] = value.content
             elif merge is not None:
-                stored_value = Value(obj['content'])
-                stored_value.version = obj['version']
+                stored_value = Value(obj.get('content'))
+                stored_value.version = obj.get('version', -1)
                 obj['content'] = merge(value, stored_value).content
             else:
                 raise WriteError("Stored version is newer than ours")
