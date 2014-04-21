@@ -11,8 +11,7 @@ Goals
 * It must be easy to use
 * It must be easy to code
 * It must not require anything, but a unix filesystem
-* It must be safe to use with concurrent processes (and, consequently,
-  threads)
+* It must be safe to use with concurrent processes (and threads)
 
 Install
 =======
