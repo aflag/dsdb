@@ -13,6 +13,23 @@ Goals
 * It must not require anything, but a unix filesystem
 * It must be safe to use with concurrent processes (and, consequently, threads)
 
+Install
+=======
+
+Use pip to do it:
+
+```
+pip install -e git://github.com/aflag/dsdb@0.1#egg=dsdb
+```
+
+Notice that you can add
+
+```
+-e git://github.com/aflag/dsdb@0.1#egg=dsdb
+```
+
+to your requirements.txt.
+
 Example
 =======
 
