@@ -6,6 +6,9 @@ import collections
 from contextlib import contextmanager
 
 
+__version__ = '0.1'
+
+
 class WriteError(Exception):
     pass
 
