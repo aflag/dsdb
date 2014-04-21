@@ -29,6 +29,22 @@ class TestFileLock(unittest.TestCase):
         with open('tests/file', 'rb') as f:
             self.assertEqual('things', f.read())
 
+    def test_write_twice_to_file(self):
+        with lock_file('tests/file', 'wb') as f:
+            f.write('things')
+        with lock_file('tests/file', 'wb') as f:
+            f.write('my things')
+        with open('tests/file', 'rb') as f:
+            self.assertEqual('my things', f.read())
+
+    def test_write_twice_big_first_to_file(self):
+        with lock_file('tests/file', 'wb') as f:
+            f.write('my things')
+        with lock_file('tests/file', 'wb') as f:
+            f.write('things')
+        with open('tests/file', 'rb') as f:
+            self.assertEqual('things', f.read())
+
     def test_file_locking(self):
         t = FileLockingThread()
         with lock_file('tests/file', 'wb') as f:
